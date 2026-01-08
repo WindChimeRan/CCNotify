@@ -4,6 +4,9 @@
 
 CCNotify provides notifications for Claude Code, alerting you when Claude needs your input or completes tasks.
 
+## Important Notes
+Starting from claude-code v1.0.95 (2025-08-31), any invalid settings in `~/.claude/settings.json` will disable hooks. See [Why not working](#why-not-working) for solutions.
+
 ## Features
 
 - 🔔 **Get notified** when Claude requires your input or completes a task
@@ -156,6 +159,30 @@ Edit `~/.claude/ccnotify/config.json`:
   }
 }
 ```
+
+## Why not working
+1. Ensure hooks configuration is active. Here's an example where other configurations prevent hooks from working:
+
+`claude -p --model haiku -d hooks --verbose "hi"`
+
+Expected output:
+
+```
+[DEBUG] Found 1 hook commands to execute
+[DEBUG] Executing hook command: ~/.claude/ccnotify/ccnotify.py UserPromptSubmit with timeout 60000ms
+[DEBUG] Hook command completed with status 0: ~/.claude/ccnotify/ccnotify.py UserPromptSubmit
+```
+
+Actual output:
+
+```
+[DEBUG] Invalid settings in userSettings source - key: permissions.allow.0, error:.....
+[DEBUG] Found 0 hook commands to execute
+```
+Reason: In September 2025, claude-code strengthened validation rules for settings.json. Any invalid configuration will disable hooks.
+You need to modify the relevant configurations in `~/.claude/settings.json` until the `Invalid settings` error stops appearing.
+
+
 
 ## How It Works
 
